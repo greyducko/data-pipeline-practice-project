@@ -26,10 +26,12 @@ def transform(extracted_data):
 
     # dataframe for customer dimension table
     dim_customer = extracted_data.loc[:, ["Customer ID", "Customer Name", "Segment", "Country", "City", "State", "Postal Code", "Region"]].copy()
+    dim_customer = dim_customer.drop_duplicates(subset=["Customer ID"])
     tables["dim_customer"] = dim_customer
 
     # dataframe for product dimension table
     dim_product = extracted_data.loc[:, ["Product ID", "Category", "Sub-Category", "Product Name"]].copy()
+    dim_product = dim_product.drop_duplicates(subset=["Product ID"])
     tables["dim_product"] = dim_product
 
     return tables
@@ -37,13 +39,13 @@ def transform(extracted_data):
 
 def load(transformed_data):
     # create FactOrder csv file
-    transformed_data["fact_orders"].to_csv("FactOrder", index=False)
+    transformed_data["fact_orders"].to_csv("FactOrder.csv", index=False)
 
     # create DimCustomer csv file
-    transformed_data["dim_customer"].to_csv("DimCustomer", index=False)
+    transformed_data["dim_customer"].to_csv("DimCustomer.csv", index=False)
 
     # create DimProduct csv file
-    transformed_data["dim_product"].to_csv("DimProduct", index=False)
+    transformed_data["dim_product"].to_csv("DimProduct.csv", index=False)
 
 
 if __name__ == "__main__":
