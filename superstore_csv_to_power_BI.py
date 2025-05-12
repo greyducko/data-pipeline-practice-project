@@ -14,6 +14,9 @@ def transform(extracted_data):
     extracted_data["Order Date"] = pd.to_datetime(extracted_data["Order Date"], dayfirst=True)
     extracted_data["Ship Date"] = pd.to_datetime(extracted_data["Ship Date"], dayfirst=True)
 
+    # round sales and profit columns to two decimal places
+    extracted_data["Sales"] = extracted_data["Sales"].round(2)
+    extracted_data["Profit"] = extracted_data["Profit"].round(2)
     # create dict to store csvs for Power BI
     tables = {}
 
@@ -31,17 +34,20 @@ def transform(extracted_data):
 
     return tables
 
+
 def load(transformed_data):
+    # create FactOrder csv file
+    transformed_data["fact_orders"].to_csv("FactOrder", index=False)
 
+    # create DimCustomer csv file
+    transformed_data["dim_customer"].to_csv("DimCustomer", index=False)
 
-
+    # create DimProduct csv file
+    transformed_data["dim_product"].to_csv("DimProduct", index=False)
 
 
 if __name__ == "__main__":
     extracted_data = extract("Superstore.csv")
     print(extracted_data)
     transformed_data = transform(extracted_data)
-    for table in transformed_data:
-        print(transformed_data[table].head())
-
-    # load(transformed_data)
+    load(transformed_data)
